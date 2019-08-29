@@ -1,13 +1,61 @@
-<div class="container">
+<div class="grid-container">
+
+
+  <div class="title">
+    <h1>
+      Image recognition
+    </h1>
+  </div>
 
   <div class="left">
-    <h2>Images </h2>
-    <img src="https://cdn.britannica.com/55/174255-004-9A4971E9.jpg"
-         (click)="getStats($event.target.src)">
+    <div class="grid-gallery">
+
+      <img *ngFor="let image of images; let i = index;"
+           [src]="image.url"
+           (click)="selectImage(i)"
+           [ngClass]="{'active': image.active}">
+    </div>
+
+    <input placeholder="Url img..."
+           #url
+           (focusout)="getStats(url.value)" />
+
+    <img [src]="url.value">
 
   </div>
   <div class="right">
-    <h2>Stats</h2>
+
+    <div *ngIf="loading"
+         class="lds-hourglass"></div>
+
+    <ng-container *ngIf="stats">
+
+      <table *ngIf="stats">
+        <th>
+          CATEGORY
+        </th>
+        <th>
+          SCORE
+        </th>
+        <tr *ngFor="let row of stats">
+          <td>{{row.name | titlecase}}</td>
+          <td>{{row.score}} %</td>
+        </tr>
+      </table>
+
+      <div class="chart-container">
+        <ngx-charts-pie-chart [results]="data"
+                              [labels]="true"
+                              [scheme]="'vivid'"
+                              [trimLabels]="false"></ngx-charts-pie-chart>
+      </div>
+
+    </ng-container>
+
+    <ng-container *ngIf="error">
+      {{error.error}}
+    </ng-container>
+
   </div>
 
 </div>
